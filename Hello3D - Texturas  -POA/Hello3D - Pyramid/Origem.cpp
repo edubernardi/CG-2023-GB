@@ -50,7 +50,8 @@ struct Vertex
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 // Protótipo da função de callback do mouse
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-;
+// Callback scroll
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 1000, HEIGHT = 1000;
@@ -101,7 +102,7 @@ int main()
 	// Fazendo o registro da função de callback para a janela GLFW
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
-	
+	glfwSetScrollCallback(window, scroll_callback);
 
 	glfwSetCursorPos(window,WIDTH / 2, HEIGHT / 2);
 
@@ -152,6 +153,8 @@ int main()
 
 	rapidjson::Document document;
 	document.Parse(contents.c_str());
+
+
 
 	glm::vec3 lightPos;
 	glm::vec3 lightColor;
