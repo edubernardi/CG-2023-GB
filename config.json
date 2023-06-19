@@ -1,0 +1,78 @@
+{
+	"camera":{
+		"position":{
+			"x":10.0,
+			"y":0.0,
+			"z":3.0
+		},
+		"front":{
+			"x":0.0,
+			"y":0.0,
+			"z":-1.0
+		},
+		"up":{
+			"x":0.0,
+			"y":1.0,
+			"z":0.0
+		},
+		"fov":90.0
+	},
+	"light":{
+		"position":{
+			"x":5.0,
+			"y":0.0,
+			"z":5.0
+		},
+		"color":{
+			"r":1.0,
+			"g":1.0,
+			"b":1.0
+		},
+		"q":100.0
+	},
+	"objects":
+	[
+		{
+			"folder": "../../3D_models/Pokemon/",
+			"model": "Pikachu.obj",
+			"mtl": "Pikachu.mtl",
+			"position": {
+				"x":2.0,
+				"y":0.0,
+				"z":0.0
+			},
+			"scale": {
+				"x":1.0,
+				"y":1.0,
+				"z":1.0
+			},
+			"axis": {
+				"x":1.0,
+				"y":0.0,
+				"z":0.0
+			},
+			"angle": 45.0
+		},
+		{
+		"folder": "../../3D_models/Suzanne/",
+		"model": "CuboTextured.obj",
+		"mtl": "CuboTextured.mtl",
+		"position": {
+				"x":0.0,
+				"y":0.0,
+				"z":0.0
+			},
+		"scale": {
+				"x":1.0,
+				"y":1.0,
+				"z":10.0
+			},
+		"axis": {
+			"x":1.0,
+			"y":0.0,
+			"z":0.0
+		},
+		"angle": 3.0
+		}
+	]
+}
