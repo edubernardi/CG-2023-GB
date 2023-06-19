@@ -16,7 +16,9 @@ void Mesh::initialize(GLuint VAO, int nVertices, Shader* shader, GLuint texID, f
 
 void Mesh::update()
 {
-	
+	shader->setFloat("ka", ka);
+	shader->setFloat("kd", kd);
+	shader->setFloat("ks", ks);
 }
 
 void Mesh::draw()

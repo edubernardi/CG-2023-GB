@@ -1,13 +1,13 @@
 #include "Object.h"
 
-void Object::initialize(string folder, string obj, string mtl, Shader* shader, glm::vec3 position, glm::vec3 scale, float angle, glm::vec3 axis)
+void Object::initialize(string folder, string obj, string mtl, Shader* shader, glm::vec3 position, glm::vec3 scale, float angle, glm::vec3 axis, bool selected)
 {
 	this->position = position;
 	this->scale = scale;
 	this->angle = angle;
 	this->axis = axis;
 	this->shader = shader;
-
+	
 	loadObj(folder, obj, mtl);
 }
 
@@ -18,12 +18,21 @@ void Object::update()
 	model = glm::rotate(model, glm::radians(angle), axis);
 	model = glm::scale(model, scale);
 	shader->setMat4("model", glm::value_ptr(model));
+	shader->setMat4("model", glm::value_ptr(model));
 }
+
+
 
 void Object::draw()
 {
+	
+
 	for (int i = 0; i < grupos.size(); i++)
 	{
+		if (selected) {
+			grupos[i].shader->setVec3("lightColor", 0.9, 0.5, 0.5);
+		}
+		grupos[i].update();
 		grupos[i].draw();
 	}
 }
@@ -148,8 +157,10 @@ void Object::loadObj(string folder, string obj, string mtl)
 						i++;
 						int nVerts;
 						GLuint VAO = generateVAO(vbuffer, nVerts);
-						cout << materials[current].ka << " " << materials[current].kd << " " << materials[current].ks << " ";
+						//cout << materials[current].ka << " " << materials[current].kd << " " << materials[current].ks << " ";
 						grupo.initialize(VAO, nVerts, shader, texID, materials[current].ka, materials[current].kd, materials[current].ks);
+
+						grupo.update();
 
 						grupos.push_back(grupo);
 

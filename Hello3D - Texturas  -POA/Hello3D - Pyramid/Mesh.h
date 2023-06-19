@@ -16,13 +16,13 @@ public:
 	void initialize(GLuint VAO, int nVertices, Shader* shader, GLuint texID, float ka, float kd, float ks);
 	void update();
 	void draw();
-
+	Shader* shader;
 protected:
 	GLuint VAO; //Identificador do Vertex Array Object - Vértices e seus atributos
 	int nVertices;
 
 	//Referência (endereço) do shader
-	Shader* shader;
+	
 	GLuint texID; //id da textura
 	float ka;
 	float kd;
