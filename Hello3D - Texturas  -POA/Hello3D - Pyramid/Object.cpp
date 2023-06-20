@@ -11,8 +11,31 @@ void Object::initialize(string folder, string obj, string mtl, Shader* shader, g
 	loadObj(folder, obj, mtl);
 }
 
+void Object::initalizeAnimation(bool animated, Bezier bezier) {
+	this->animated = animated;
+	this->bezier = bezier;
+	this->animationIndex = 0;
+	this->increment = 1;
+}
+
 void Object::update()
 {
+	if (animated) {
+		position = bezier.getPointOnCurve(animationIndex);
+
+		if (animationIndex >= (bezier.getNbCurvePoints() - 1)) {
+			increment = -1;
+			animationIndex = bezier.getNbCurvePoints() - 1;
+		}
+
+		if (animationIndex <= 0) {
+			increment = 1;
+			animationIndex = 0;
+		}
+
+		animationIndex = animationIndex + increment;
+	}
+
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, position);
 	model = glm::rotate(model, glm::radians(angle), axis);

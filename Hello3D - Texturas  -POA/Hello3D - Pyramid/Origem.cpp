@@ -38,6 +38,9 @@ using namespace std;
 
 #include "Object.h"
 
+//Curvas
+#include "Bezier.h"
+
 struct Vertex
 {
 	glm::vec3 position;
@@ -45,7 +48,7 @@ struct Vertex
 	//glm::vec3 normal;
 };
 
-
+std::vector<glm::vec3> generatePointsSet(vector <float> vertices);
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 // Protótipo da função de callback do mouse
@@ -211,10 +214,6 @@ int main()
 		float angle = document["objects"][i]["angle"].GetFloat();
 		
 
-		//Inicializar objeto
-		obj.initialize(folder, objfile, mtl, &shader, position, scale, angle, axis);
-		objects.push_back(obj);
-
 		//Coletar luz
 		//Posicao
 		lightPos = glm::vec3(document["light"]["position"]["x"].GetFloat(),
@@ -227,6 +226,37 @@ int main()
 		//Expoente de Phong
 		float q = document["light"]["q"].GetFloat();
 		shader.setFloat("q", q);
+
+		//Boolean se é animado
+		bool animated = document["objects"][i]["animated"].GetInt();
+		
+		//Inicializar objeto
+		obj.initialize(folder, objfile, mtl, &shader, position, scale, angle, axis);
+
+		//Se for animado, pega o conjunto de vértices e inicializa os elementos para animação
+		vector <float> vertices;
+		if (animated) {
+			for (int j = 0; j < document["objects"][i]["vertices"].Size(); j++) {
+				vertices.push_back(document["objects"][i]["vertices"][j].GetFloat());
+			}
+
+			vector <glm::vec3> points = generatePointsSet(vertices);
+
+			Bezier bezier;
+
+			bezier.setControlPoints(points);
+			bezier.generateCurve(10);
+
+			obj.initalizeAnimation(animated, bezier);
+
+			int nbCurvePoints = bezier.getNbCurvePoints();
+			
+
+
+		}
+
+		
+		objects.push_back(obj);
 	}
 
 	
@@ -244,6 +274,7 @@ int main()
 
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(glGetUniformLocation(shader.ID, "colorBuffer"), 0);
+
 
 
 
@@ -284,7 +315,7 @@ int main()
 		//Atualizando a posição e orientação da câmera
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setMat4("view", glm::value_ptr(view));
-		
+
 		//Atualizando o shader com a posição da câmera
 		shader.setVec3("cameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
 
@@ -292,7 +323,6 @@ int main()
 		shader.setMat4("projection", glm::value_ptr(projection));
 
 		// Chamada de desenho - drawcall
-
 		for (int i = 0; i < objects.size(); i++) {
 			shader.setVec3("lightColor", lightColor.r, lightColor.g, lightColor.b);
 			objects[i].update();
@@ -495,4 +525,22 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	fov -= yoffset;
+}
+
+
+std::vector<glm::vec3> generatePointsSet(vector <float> vertices)
+{
+	vector <glm::vec3> uniPoints;
+
+	for (int i = 0; i < 67 * 3; i += 3)
+	{
+		glm::vec3 point;
+		point.x = vertices[i];
+		point.y = vertices[i + 1];
+		point.z = 0.0;
+
+		uniPoints.push_back(point);
+	}
+
+	return uniPoints;
 }
