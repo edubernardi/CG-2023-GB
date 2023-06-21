@@ -7,7 +7,7 @@ void Object::initialize(string folder, string obj, string mtl, Shader* shader, g
 	this->angle = angle;
 	this->axis = axis;
 	this->shader = shader;
-	
+	this->animationIndex = -1;
 	loadObj(folder, obj, mtl);
 }
 
@@ -20,8 +20,9 @@ void Object::initalizeAnimation(bool animated, Bezier bezier) {
 
 void Object::update()
 {
+	glm::vec3 animation = glm::vec3(0, 0, 0);
 	if (animated) {
-		position = bezier.getPointOnCurve(animationIndex);
+		animation = bezier.getPointOnCurve(animationIndex);
 
 		if (animationIndex >= (bezier.getNbCurvePoints() - 1)) {
 			increment = -1;
@@ -37,7 +38,7 @@ void Object::update()
 	}
 
 	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, position);
+	model = glm::translate(model, glm::vec3(animation.x + position.x, animation.y + position.y, animation.z + position.z));
 	model = glm::rotate(model, glm::radians(angle), axis);
 	model = glm::scale(model, scale);
 	shader->setMat4("model", glm::value_ptr(model));
@@ -81,12 +82,16 @@ void Object::loadObj(string folder, string obj, string mtl)
 			string word;
 
 			istringstream ssline(line);
+			string filename;
 			ssline >> word;
 
 			if (word == "newmtl" || input.eof()) {
 				materials.push_back(material);
+				cout << material.name << " " << material.file << "\n";
 				ssline >> material.name;
+				filename = "";
 				glm::vec3 material;
+				
 			}
 
 			if (word == "Ka") {
@@ -102,10 +107,9 @@ void Object::loadObj(string folder, string obj, string mtl)
 			}
 
 			if (word == "map_Kd") {
-				string filename;
 				ssline >> filename;
 				material.file = folder + filename;
-				//cout << folder + filename << "\n";
+				filename = "";
 			}
 		}
 
@@ -165,7 +169,7 @@ void Object::loadObj(string folder, string obj, string mtl)
 							//cout << usemtl << " ";
 							//cout << materials[j].name << "\n";
 							if (materials[j].name == usemtl) {
-								
+								//cout << materials[j].name << "\n";
 								current = j;
 								break;
 							}
@@ -175,7 +179,7 @@ void Object::loadObj(string folder, string obj, string mtl)
 						inicioGrupo = false;
 
 						Mesh grupo;
-						//cout << materials[current].file << "\n";
+						//cout << materials[current].file << " " << materials[current].name << "\n";
 						GLuint texID = loadTexture(materials[current].file);
 						i++;
 						int nVerts;
@@ -259,7 +263,7 @@ void Object::loadObj(string folder, string obj, string mtl)
 				}
 			}
 		}
-
+		std::cout << "Done" << std::endl;
 	}
 	else
 	{
@@ -341,7 +345,7 @@ GLuint Object::loadTexture(string filePath)
 
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
-
+	//cout << filePath.c_str() << "\n";
 	if (data)
 	{
 		if (nrChannels == 3) //jpg, bmp

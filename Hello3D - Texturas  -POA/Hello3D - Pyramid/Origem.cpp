@@ -57,7 +57,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 1000, HEIGHT = 1000;
+const GLuint WIDTH = 1920, HEIGHT = 1080;
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
@@ -99,7 +99,7 @@ int main()
 //#endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola 3D!", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Chessboard!", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -351,22 +351,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_W)
 	{
-		cameraPos += cameraFront * float(0.1);
+		cameraPos += cameraFront * float(1.0);
 	}
 
 	if (key == GLFW_KEY_S)
 	{
-		cameraPos -= cameraFront * float(0.1);
+		cameraPos -= cameraFront * float(1.0);
 	}
 
 	if (key == GLFW_KEY_A)
 	{
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * float(0.1);
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * float(1.0);
 	}
 
 	if (key == GLFW_KEY_D)
 	{
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * float(0.1);
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * float(1.0);
 	}
 
 
@@ -405,22 +405,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//translate
 	if (key == GLFW_KEY_UP)
 	{
-		objects[selected].position.z -= 0.1;
+		objects[selected].position.z -= 0.3;
 	}
 
 	if (key == GLFW_KEY_DOWN)
 	{
-		objects[selected].position.z += 0.1;
+		objects[selected].position.z += 0.3;
 	}
 
 	if (key == GLFW_KEY_LEFT)
 	{
-		objects[selected].position.x -= 0.1;
+		objects[selected].position.x -= 0.3;
 	}
 
 	if (key == GLFW_KEY_RIGHT)
 	{
-		objects[selected].position.x += 0.1;
+		objects[selected].position.x += 0.3;
 	}
 
 	if (key == GLFW_KEY_RIGHT_SHIFT)
@@ -491,6 +491,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		objects[selected].angle -= 0.5;
 	}
 
+	//Start stop animation
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		if (objects[selected].animationIndex != -1) {
+			if (objects[selected].animated) {
+				objects[selected].animated = false;
+			}
+			else {
+				objects[selected].animated = true;
+			}
+		}
+		
+	}
+
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -530,17 +544,17 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 std::vector<glm::vec3> generatePointsSet(vector <float> vertices)
 {
-	vector <glm::vec3> uniPoints;
+	vector <glm::vec3> points;
 
-	for (int i = 0; i < 67 * 3; i += 3)
+	for (int i = 0; i < 45 * 3; i += 3)
 	{
 		glm::vec3 point;
 		point.x = vertices[i];
 		point.y = vertices[i + 1];
 		point.z = 0.0;
 
-		uniPoints.push_back(point);
+		points.push_back(point);
 	}
 
-	return uniPoints;
+	return points;
 }
